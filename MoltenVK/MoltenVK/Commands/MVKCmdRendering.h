@@ -45,6 +45,8 @@ public:
 
 	inline MVKRenderPass* getRenderPass() { return _renderPass; }
 
+	bool beginsRenderPass() override { return true; }
+
 protected:
 
 	MVKRenderPass* _renderPass;
@@ -130,6 +132,8 @@ public:
 
 	void encode(MVKCommandEncoder* cmdEncoder) override;
 
+	bool endsRenderPass() override { return true; }
+
 protected:
 	MVKCommandTypePool<MVKCommand>* getTypePool(MVKCommandPool* cmdPool) override;
 
@@ -151,6 +155,8 @@ public:
 						const VkRenderingInfo* pRenderingInfo);
 
 	void encode(MVKCommandEncoder* cmdEncoder) override;
+
+	bool beginsRenderPass() override { return true; }
 
 
 protected:
@@ -218,6 +224,8 @@ public:
 	VkResult setContent(MVKCommandBuffer* cmdBuff);
 
 	void encode(MVKCommandEncoder* cmdEncoder) override;
+
+	bool endsRenderPass() override { return true; }
 
 protected:
 	MVKCommandTypePool<MVKCommand>* getTypePool(MVKCommandPool* cmdPool) override;

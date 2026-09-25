@@ -22,6 +22,8 @@
 #include "MVKMTLResourceBindings.h"
 #include "MVKSmallVector.h"
 
+class MVKMTLBufferAllocation;
+
 #import <Metal/Metal.h>
 
 
@@ -162,6 +164,7 @@ public:
 						uint32_t stride);
 
 	void encode(MVKCommandEncoder* cmdEncoder) override;
+	void preencodeBeforeRenderPass(MVKCommandEncoder* cmdEncoder) override;
 
 protected:
 	MVKCommandTypePool<MVKCommand>* getTypePool(MVKCommandPool* cmdPool) override;
@@ -176,6 +179,8 @@ protected:
 	uint32_t _drawCount;
 	id<MTLBuffer> _mtlCountBuffer;
 	VkDeviceSize _mtlCountBufferOffset;
+	const MVKMTLBufferAllocation* _preconvertedIndirectBuffer = nullptr;
+	id<MTLCommandBuffer> _preconvertedMTLCmdBuffer = nil;
 };
 
 
@@ -207,6 +212,7 @@ public:
 
 	void encode(MVKCommandEncoder* cmdEncoder) override;
 	void encode(MVKCommandEncoder* cmdEncoder, const MVKIndexMTLBufferBinding& ibbOrig);
+	void preencodeBeforeRenderPass(MVKCommandEncoder* cmdEncoder) override;
 
 protected:
 	MVKCommandTypePool<MVKCommand>* getTypePool(MVKCommandPool* cmdPool) override;
@@ -217,4 +223,6 @@ protected:
 	uint32_t _drawCount;
 	id<MTLBuffer> _mtlCountBuffer;
 	VkDeviceSize _mtlCountBufferOffset;
+	const MVKMTLBufferAllocation* _preconvertedIndirectBuffer = nullptr;
+	id<MTLCommandBuffer> _preconvertedMTLCmdBuffer = nil;
 };

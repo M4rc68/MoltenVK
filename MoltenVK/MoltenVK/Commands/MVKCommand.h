@@ -67,6 +67,18 @@ public:
 	/** Encodes this command on the specified command encoder. */
 	virtual void encode(MVKCommandEncoder* cmdEncoder) = 0;
 
+	/** Returns whether this command begins a Vulkan render pass or dynamic rendering. */
+	virtual bool beginsRenderPass() { return false; }
+
+	/** Returns whether this command ends a Vulkan render pass or dynamic rendering. */
+	virtual bool endsRenderPass() { return false; }
+
+	/**
+	 * Called for each command inside a render pass, before the Metal render pass is begun,
+	 * allowing the command to encode work that would otherwise require splitting the render pass.
+	 */
+	virtual void preencodeBeforeRenderPass(MVKCommandEncoder* cmdEncoder) {}
+
 protected:
 	friend MVKCommandBuffer;
 

@@ -449,6 +449,7 @@ void MVKCommandEncoder::encodeCommands(MVKCommand* command) {
 void MVKCommandEncoder::encodeCommandsImpl(MVKCommand* command) {
     while(command) {
         uint32_t prevMVPassIdx = _multiviewPassIndex;
+        if (command->beginsRenderPass()) { preencodeRenderPassCommands(command->_next); }
         command->encode(this);
 
         if(_multiviewPassIndex > prevMVPassIdx) {
@@ -462,6 +463,15 @@ void MVKCommandEncoder::encodeCommandsImpl(MVKCommand* command) {
     }
 }
 
+// Allows commands within a render pass to encode work, such as indirect-count conversions,
+// before the Metal render pass begins, to avoid splitting the Metal render pass later.
+void MVKCommandEncoder::preencodeRenderPassCommands(MVKCommand* command) {
+	while (command && !command->endsRenderPass()) {
+		command->preencodeBeforeRenderPass(this);
+		command = command->_next;
+	}
+}
+
 void MVKCommandEncoder::endEncoding() {
 	endCurrentMetalEncoding();
 	finishQueries();
@@ -471,6 +481,7 @@ void MVKCommandEncoder::encodeSecondary(MVKCommandBuffer* secondaryCmdBuffer) {
 	secondaryCmdBuffer->beginSecondaryEncoding(this);
 	MVKCommand* cmd = secondaryCmdBuffer->_head;
 	while (cmd) {
+		if (cmd->beginsRenderPass()) { preencodeRenderPassCommands(cmd->_next); }
 		cmd->encode(this);
 		cmd = cmd->_next;
 	}

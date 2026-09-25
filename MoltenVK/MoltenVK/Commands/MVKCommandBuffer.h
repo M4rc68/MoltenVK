@@ -523,6 +523,7 @@ protected:
 	bool hasMoreMultiviewPasses();
 	void beginNextMultiviewPass();
 	void encodeCommandsImpl(MVKCommand* command);
+	void preencodeRenderPassCommands(MVKCommand* command);
 	void encodeGPUCounterSample(MVKGPUCounterQueryPool* mvkQryPool, uint32_t sampleIndex, MVKCounterSamplingFlags samplingPoints);
 	void encodeTimestampStageCounterSamples();
 	id<MTLFence> getStageCountersMTLFence();
